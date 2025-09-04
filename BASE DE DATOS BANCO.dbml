@@ -1,27 +1,28 @@
+Enum user_role {
+    empleado
+    cliente
+}
+
 Table sucursal {
     id_sucursal int [pk]
     nombre_sucursal varchar(100) [not null]
     direccion varchar(50) [not null]
 }
 
-Table empleado {
-    id_empleado int [pk]
+Table usuario {
+    id_usuario int [pk]
     id_sucursal int [ref: > sucursal.id_sucursal]
     nombre_empleado varchar(50) [not null]
     cargo varchar(50) [not null]
-}
-
-Table cliente {
-    id_cliente int [pk]
-    id_sucursal int [ref: > sucursal.id_sucursal]
-    nombre_cliente varchar(50) [not null]
-    apellidos varchar(50) [not null]
-    direccion varchar(50) [not null]
+    username varchar(50) [not null, unique]
+    password varchar(255) [not null]
+    email varchar(100) [unique, not null]
+    role user_role [not null]
 }
 
 Table cuenta {
     id_cuenta int [pk]
-    id_cliente int [ref: > cliente.id_cliente]
+    id_usuario int [ref: > usuario.id_usuario]
     saldo decimal(12,2)
     fecha_creacion timestamp [default: `current_timestamp`]
 }
@@ -32,19 +33,20 @@ Table transaccion {
     fecha timestamp [default: `current_timestamp`]
     monto decimal(12,2)
     tipo_transaccion varchar(50) [not null]
+    
 }
 
 Table tarjeta {
     id_tarjeta int [pk]
     id_cuenta int [ref: > cuenta.id_cuenta]
-    tipo_cuenta varchar(50) [not null]
+    tipo_tarjeta varchar(50) [not null]
     fecha_vencimiento date
-    ccv int [unique, not null]
+
 }
 
 Table retiro {
     id_retiro int [pk]
     id_cuenta int [ref: > cuenta.id_cuenta]
-    cantidad_retiros int [not null]
+    monto decimal(12,2) [not null]
     fecha_retiro datetime
 }
